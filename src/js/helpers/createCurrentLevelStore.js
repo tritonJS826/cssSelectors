@@ -11,6 +11,7 @@ const createCurrentLevelStore = (currentLevel) => {
     };
 
     const store = {
+        currentLevelTitle: currentLevelData.headerTitle,
         currentLevelNumber: currentLevelData.levelNumber,
         currentLevelNameHTML: currentLevelData.currentLevelNameHTML,
         currentHelpBlockHTML: currentLevelData.helpBlockHTML,

@@ -1,3 +1,11 @@
+const SIDE_BAR_ELEMENTS_ID = {
+    nextArrow: 'nextArrow',
+    prevArrow: 'prevArrow',
+};
+
+const nextArrow = () => document.getElementById(SIDE_BAR_ELEMENTS_ID.nextArrow);
+const prevArrow = () => document.getElementById(SIDE_BAR_ELEMENTS_ID.prevArrow);
+
 export default class SideBar {
     constructor({
         LEVELS,
@@ -10,6 +18,8 @@ export default class SideBar {
         selectorHTML,
         descriptionHTML,
         examples,
+        increaseCurrentLevel,
+        decreaseCurrentLevel,
     }) {
         this.whereId = '';
         this.LEVELS = LEVELS;
@@ -22,6 +32,28 @@ export default class SideBar {
         this.selectorHTML = selectorHTML;
         this.descriptionHTML = descriptionHTML;
         this.examples = examples;
+        this.increaseCurrentLevel = () => increaseCurrentLevel();
+        this.decreaseCurrentLevel = () => decreaseCurrentLevel();
+
+        this.onClickPrevArrow = () => {
+            this.decreaseCurrentLevel();
+        }
+
+        this.onClickNextArrow = () => {
+            this.increaseCurrentLevel();
+        }
+        
+        
+        this.addListenerSideBar = () => {
+            prevArrow().addEventListener('click', this.onClickPrevArrow);
+            nextArrow().addEventListener('click', this.onClickNextArrow);
+
+        }
+
+        this.removeListenersSideBar = () => {
+            prevArrow().removeEventListener('click', this.onClickPrevArrow);
+            nextArrow().removeEventListener('click', this.onClickNextArrow);
+        }
     }
 
     getProps({ 
@@ -36,7 +68,7 @@ export default class SideBar {
         selectorHTML,
         descriptionHTML,
         examples,
-     }) {
+    }) {
          const isDataChanged = (LEVELS && LEVELS !== this.LEVELS) || 
          (whereId && whereId !== this.whereId) ||
          (completedLevels && completedLevels !== this.completedLevels) ||
@@ -66,10 +98,10 @@ export default class SideBar {
             this.rerender();
         }
 
-        console.log(isDataChanged);
     }
 
     rerender() {
+        this.removeListenersSideBar();
         this.render(this.whereId);
     }
 
@@ -79,8 +111,11 @@ export default class SideBar {
         element.innerHTML = (`
             <div className="sideBar">
                 <h2 class="sidebar__level">Level ${this.currentLevel} of ${this.LEVELS.length} </h2>
-                <div class="sidebar__nav-arrows"><</div>
-                <div class="sidebar__burger">></div>
+                <div class="sidebar__nav-arrows">
+                    <div id=${SIDE_BAR_ELEMENTS_ID.prevArrow}><</div>
+                    <div id=${SIDE_BAR_ELEMENTS_ID.nextArrow}>></div>
+                </div>
+                <div class="sidebar__burger" id="">=</div>
                 <div class="level__progress-bar">${( this.currentLevel / this.LEVELS.length) * 100}%</div>
                 <div class="sidebar__title">${this.titleHTML}</div>
                 <div class="sidebar__subtitle">${this.subTitleHTML}</div>
@@ -95,10 +130,14 @@ export default class SideBar {
                 </div>
 
                 <div class="sidebar__levels-list levels-list">
+                It is List (start)
                 ${this.LEVELS.map((levelData) => `
                 <p class="levels-list__item">${levelData.selectorHTML}</p></br>
                 `)}
+                It is List (end)
                 </div>
             </div>`)
+
+            this.addListenerSideBar();
     }
 }

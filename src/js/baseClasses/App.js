@@ -27,11 +27,21 @@ export default class App {
             selectorHTML: this.currentLevelStore.currentSelectorHTML,
             descriptionHTML: this.currentLevelStore.currentDescriptionHTML,
             examples: this.currentLevelStore.currentExamples,
+            increaseCurrentLevel: this.increaseCurrentLevel.bind(this),
+            decreaseCurrentLevel: this.decreaseCurrentLevel.bind(this),
         }
 
+        const headerBaseState = {
+            levelTitle: this.currentLevelStore.currentLevelTitle,
+            helpBlockHTML: this.currentLevelStore.currentHelpBlockHTML,
+            isHelpBlockHTMLVisible: this.currentLevelStore.isCurretHelpBlockHTMLVisible,
+            toggleHelpBlock: this.toggleHelpBlock.bind(this),
+        };
+
+
+        this.header = new Header(headerBaseState);
         this.cssEditor = {};
         this.footer = new Footer();
-        this.header = new Header();
         this.hTMLViewer = new HTMLViewer();
         this.sideBar = new SideBar(sideBarBaseState);
         this.table = new Table();
@@ -42,7 +52,7 @@ export default class App {
     }
 
     setCurrentLevelStore(newStore) {
-        this.createCurrentLevelStore = newStore;
+        this.currentLevelStore = newStore;
 
         const sideBarProps = {
             levelNumber: this.currentLevelStore.currentLevelNumber,
@@ -58,6 +68,16 @@ export default class App {
         // this.hTMLViewer.getProps({});
         this.sideBar.getProps(sideBarProps);
         // this.table.getProps({});
+    }
+
+    toggleHelpBlock() {
+        this.currentLevelStore.isCurretHelpBlockHTMLVisible = !this.currentLevelStore.isCurretHelpBlockHTMLVisible;
+
+        const headerNewState = {
+            isHelpBlockHTMLVisible: this.currentLevelStore.isCurretHelpBlockHTMLVisible,
+        }
+
+        this.header.getProps(headerNewState);
     }
 
     // getCurrentUserAnswer() {}
@@ -77,26 +97,70 @@ export default class App {
         }
 
         this.currentLevel += 1;
-        
+
         const newStore = createCurrentLevelStore(this.currentLevel)
-        this.setCurrentLevelStore(newStore)
+        this.setCurrentLevelStore(newStore);
 
-        // we need to throw right data into sidebar her
+        const sideBarProps = {
+            currentLevel: this.currentLevel,
+            completedLevels: this.completedLevels,
+            levelNumber: this.currentLevelStore.currentLevelNumber,
+            levelNameHTML: this.currentLevelStore.currentLevelNameHTML,
+            titleHTML: this.currentLevelStore.currentTitleHTML,
+            subTitleHTML: this.currentLevelStore.currentSubTitleHTML,
+            selectorHTML: this.currentLevelStore.currentSelectorHTML,
+            descriptionHTML: this.currentLevelStore.currentDescriptionHTML,
+            examples: this.currentLevelStore.currentExamples,
+            increaseCurrentLevel: this.increaseCurrentLevel.bind(this),
+            decreaseCurrentLevel: this.decreaseCurrentLevel.bind(this),
+        }
 
-        // const sideBarProps = {
-        //     levelNumber: this.currentLevelStore.currentLevelNumber,
-        //     levelNameHTML: this.currentLevelStore.levelNameHTML,
-        //     titleHTML: this.currentLevelStore.currentTitleHTML,
-        //     subTitleHTML: this.currentLevelStore.currnetSubTitleHTML,
-        //     selectorHTML: this.currentLevelStore.currentSelectorHTML,
-        //     descriptionHTML: this.currentLevelStore.currentDescriptionHTML,
-        //     examples: this.examples,
-        // }
-        console.log(this.currentLevel);
-        this.sideBar.getProps({ levelNumber: this.currentLevelStore.currentLevelNumber});
+        const headerProps = {
+            levelTitle: this.currentLevelStore.currentLevelTitle,
+            helpBlockHTML: this.currentLevelStore.currentHelpBlockHTML,
+            isHelpBlockHTMLVisible: this.currentLevelStore.isCurretHelpBlockHTMLVisible, 
+            toggleHelpBlock: this.toggleHelpBlock.bind(this),
+        }
+
+        this.sideBar.getProps(sideBarProps);
+        this.header.getProps(headerProps);
     }
 
-    // decreaseCurrentLevel() {}
+    decreaseCurrentLevel() {
+        if (this.currentLevel === 1) {
+            alert('It is the first level')
+            return;
+        }
+
+        this.currentLevel -= 1;
+
+        const newStore = createCurrentLevelStore(this.currentLevel)
+        this.setCurrentLevelStore(newStore);
+
+        const sideBarProps = {
+            currentLevel: this.currentLevel,
+            completedLevels: this.completedLevels,
+            levelNumber: this.currentLevelStore.currentLevelNumber,
+            levelNameHTML: this.currentLevelStore.currentLevelNameHTML,
+            titleHTML: this.currentLevelStore.currentTitleHTML,
+            subTitleHTML: this.currentLevelStore.currentSubTitleHTML,
+            selectorHTML: this.currentLevelStore.currentSelectorHTML,
+            descriptionHTML: this.currentLevelStore.currentDescriptionHTML,
+            examples: this.currentLevelStore.currentExamples,
+            increaseCurrentLevel: this.increaseCurrentLevel.bind(this),
+            decreaseCurrentLevel: this.decreaseCurrentLevel.bind(this),
+        }
+
+        const headerProps = {
+            levelTitle: this.currentLevelStore.currentLevelTitle,
+            helpBlockHTML: this.currentLevelStore.currentHelpBlockHTML,
+            isHelpBlockHTMLVisible: this.currentLevelStore.isCurretHelpBlockHTMLVisible,
+            toggleHelpBlock: this.toggleHelpBlock.bind(this),
+        }
+
+        this.sideBar.getProps(sideBarProps);
+        this.header.getProps(headerProps);
+    }
 
     // setCurrentLevel(levelNumber: number) {}
 
@@ -181,25 +245,29 @@ export default class App {
     //     this.addListenerOnResetButton(); 
     // }
 
+    setCurrentUserAnswer(answer) {
+        this.currentLevelStore.currentUserAnswer = answer;
+    }
+
     initAllBaseClasses() {
-        const setCurrentUserAnswer = (answer) => {
-            this.currentLevelStore.currentUserAnswer = answer;
+        const cssEditorBaseState = {
+            setCurrentUserAnswer: this.setCurrentUserAnswer.bind(this),
+            onCheckAnswerButton: this.onCheckAnswerButton.bind(this),
+        }
+
+        const headerBaseState = {
+            levelTitle: this.currentLevelStore.currentLevelTitle,
+            helpBlockHTML: this.currentLevelStore.currentHelpBlockHTML,
+            isHelpBlockHTMLVisible: this.currentLevelStore.isCurretHelpBlockHTMLVisible,
+            toggleHelpBlock: this.toggleHelpBlock.bind(this),
         };
 
-        const onCheckAnswerButton = () => {
-            this.onCheckAnswerButton();
-        }
-
-        const cssEditorBaseState = {
-            setCurrentUserAnswer: setCurrentUserAnswer.bind(this),
-            onCheckAnswerButton: onCheckAnswerButton.bind(this),
-        }
-
         this.cssEditor = new CssEditor(cssEditorBaseState);
+        this.header = new Header(headerBaseState);
     }
 
     renderAllBlocks() {
-        // this.header.render('header');
+        this.header.render('header');
         this.cssEditor.render('cssEditor');
         // this.hTMLViewer.render('hTMLViewer');
         this.sideBar.render('sideBar');
@@ -219,15 +287,22 @@ export default class App {
 // communicating between classes +
 // add architect to CssEditor +
 // add architect to Footer +
-// add architect to Header
+// add architect to Header +
 // add architect to HTMLViewer
 // add architect to SideBar +
 // add architect to Table
-// implement methods in CssEditor
+// implement methods in CssEditor +
 // implement methods in Footer +
-// implement methods in Header
+// implement methods in Header +
 // implement methods in HTMLViewer
 // implement methods in SideBar +
 // implement methods in Table
 // implement methods in App
 // write all levels inside constant LEVELS
+// implement styles in CssEditor
+// implement styles in Footer
+// implement styles in Header
+// implement styles in HTMLViewer
+// implement styles in SideBar
+// implement styles in Table
+// implement styles in App
