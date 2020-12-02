@@ -7,88 +7,122 @@ import Table from './Table';
 
 import LEVELS from '../constants/levels';
 import { SECONDS_BEFORE_NEXT_LEVEL } from '../constants/common';
+import createCurrentLevelStore from '../helpers/createCurrentLevelStore';
 
 export default class App {
     constructor() {
         this.currentLevel = 1;
         this.completedLevels = []; // Array<number>
 
-        this.currentLevelStore = {};
+        this.currentLevelStore = createCurrentLevelStore(this.currentLevel);
 
-        this.cssEditor = new CssEditor();
+        const sideBarBaseState = {
+            LEVELS,
+            currentLevel: this.currentLevel,
+            completedLevels: this.completedLevels,
+            levelNumber: this.currentLevelStore.currentLevelNumber,
+            levelNameHTML: this.currentLevelStore.currentLevelNameHTML,
+            titleHTML: this.currentLevelStore.currentTitleHTML,
+            subTitleHTML: this.currentLevelStore.currentSubTitleHTML,
+            selectorHTML: this.currentLevelStore.currentSelectorHTML,
+            descriptionHTML: this.currentLevelStore.currentDescriptionHTML,
+            examples: this.currentLevelStore.currentExamples,
+        }
+
+        this.cssEditor = {};
         this.footer = new Footer();
         this.header = new Header();
         this.hTMLViewer = new HTMLViewer();
-        this.sideBar = new SideBar();
+        this.sideBar = new SideBar(sideBarBaseState);
         this.table = new Table();
     }
 
     getCurrentLevelStore() {
-        return this.store;
+        return this.createCurrentLevelStore;
     }
 
     setCurrentLevelStore(newStore) {
-        this.store = newStore;
-      
+        this.createCurrentLevelStore = newStore;
+
+        const sideBarProps = {
+            levelNumber: this.currentLevelStore.currentLevelNumber,
+            levelNameHTML: this.currentLevelStore.LevelNameHTML,
+            titleHTML: this.currentLevelStore.currentTitleHTML,
+            subTitleHTML: this.currentLevelStore.currnetSubTitleHTML,
+            selectorHTML: this.currentLevelStore.currentSelectorHTML,
+            descriptionHTML: this.currentLevelStore.currentDescriptionHTML,
+            examples: this.examples,
+        }
+
+        // this.cssEditor.getProps({});
+        // this.hTMLViewer.getProps({});
+        this.sideBar.getProps(sideBarProps);
+        // this.table.getProps({});
     }
-
-    createCurrentLevelStore() {
-        const currentLevelData = LEVELS[this.currentLevel - 1];
-
-        const getStringWithModifier = (string) => {
-            return {
-                string,
-                isStrong: false,
-            };
-        };
-
-        const store = {
-            currentLevelNumber: currentLevelData.levelNumber,
-            currentLevelNameHTML: currentLevelData.currentLevelNameHTML,
-            currentHelpBlockHTML: currentLevelData.helpBlockHTML,
-            isCurretHelpBlockHTMLVisible: false,
-            currentTitleHTML: currentLevelData.titleHTML,
-            currentSubTitleHTML: currentLevelData.subTitleHTML,
-            currentSelectorHTML: currentLevelData.selectorHTML,
-            currentDescriptionHTML: currentLevelData.descriptionHTML,
-            currentAnswer: currentLevelData.answer,
-            currentExamples: currentLevelData.examples,
-            currentTable: currentLevelData.table,
-            currentTemplateLines: currentLevelData.templateLines.map(getStringWithModifier),
-            currentUserAnswer: '',
-        };
-
-        return store;
-    }
-
-    // setCurrentUserAnswer() {}
 
     // getCurrentUserAnswer() {}
 
-    // checkUserAnswer(): boolean {}
+    checkUserAnswer(answer) {
+        return answer === this.currentLevelStore.currentAnswer;
+    }
 
     // flySubjectsFromTableAway() {} // UI
 
     // shakeCodeArea() {}
 
-    // increaseCurrentLevel() {}
-    
+    increaseCurrentLevel() {
+        if (this.currentLevel === LEVELS.length) {
+            alert('U completed all levels')
+            return;
+        }
+
+        this.currentLevel += 1;
+        
+        const newStore = createCurrentLevelStore(this.currentLevel)
+        this.setCurrentLevelStore(newStore)
+
+        // we need to throw right data into sidebar her
+
+        // const sideBarProps = {
+        //     levelNumber: this.currentLevelStore.currentLevelNumber,
+        //     levelNameHTML: this.currentLevelStore.levelNameHTML,
+        //     titleHTML: this.currentLevelStore.currentTitleHTML,
+        //     subTitleHTML: this.currentLevelStore.currnetSubTitleHTML,
+        //     selectorHTML: this.currentLevelStore.currentSelectorHTML,
+        //     descriptionHTML: this.currentLevelStore.currentDescriptionHTML,
+        //     examples: this.examples,
+        // }
+        console.log(this.currentLevel);
+        this.sideBar.getProps({ levelNumber: this.currentLevelStore.currentLevelNumber});
+    }
+
     // decreaseCurrentLevel() {}
-    
+
     // setCurrentLevel(levelNumber: number) {}
 
-    // setCompletedLevels() {}
+    // setCompletedLevels(completedLevels/* Array<number> */) {
+    //     this.completedLevels(completedLevels);
+    //     this.sideBar.getProps({ completedLevels })
+    // }
 
-    // getCompletedLevels() {}
+    // getCompletedLevels() {
+    //     return this.completedLevels;
+    // }
 
     // setDataInLocalStorage(data) {} //helper
 
-    // getDataFromLocalStorage(): Object {} //helper
-    
+    getDataFromLocalStorage() { // helper
+        return {
+            currentLevel: 1,
+            completedLevels: [],
+            asd: this.completedLevels,
+        }
+    }
+
 
     tryToApplyDataFromLocalStorage() {              // complex(Data)
         const { currentLevel, completedLevels } = this.getDataFromLocalStorage();
-        
+
         if (!currentLevel && !completedLevels) {
             this.setDataInLocalStorage({
                 currentLevel: this.currentLevel,
@@ -102,25 +136,25 @@ export default class App {
         if (completedLevels.length !== 0) { // ??????????????check completedLevels.length !== 0?????????????
             this.setCompletedLevels(completedLevels);
         }
-    } 
+    }
 
 
-    addListenerOnCheckAnswerButton() {           // complex(UI && Data)
-        if (this.checkUserAnswer()) {
-            this.flySubjectsFromTableAway();
+    onCheckAnswerButton() {           // complex(UI && Data)
+        if (this.checkUserAnswer(this.currentLevelStore.currentUserAnswer)) {
+            // this.flySubjectsFromTableAway();
             const increaseCurrentLevel = this.increaseCurrentLevel.bind(this);
             setTimeout(() => {
                 increaseCurrentLevel();
             }, SECONDS_BEFORE_NEXT_LEVEL);
         } else {
-            this.shakeCodeArea();
+            // this.shakeCodeArea();
         }
-    } 
+    }
 
     // addListenerOnTableItem() {}
 
     // addListenerOnHTMLViewerLines() {}
-    
+
     // addListerOnLeftArrow() {}
 
     // addListerOnRightArrow() {}
@@ -135,59 +169,65 @@ export default class App {
 
     // addListenerOnResetButton() {}
 
-    addAllListeners() {                 // complex(Listeners)
-        this.addListenerOnTableItem();
-        this.addListenerOnHTMLViewerLines();    
-        this.addListerOnLeftArrow();
-        this.addListerOnRightArrow();
-        this.addListerOnLevelList();
-        this.addListerOnHintButton();
-        this.addListenerOnCssEditor();
-        this.addListenerOnHelpBlock();
-        this.addListenerOnResetButton(); 
-    }
+    // addAllListeners() {                 // complex(Listeners)
+    //     this.addListenerOnTableItem();
+    //     this.addListenerOnHTMLViewerLines();    
+    //     this.addListerOnLeftArrow();
+    //     this.addListerOnRightArrow();
+    //     this.addListerOnLevelList();
+    //     this.addListerOnHintButton();
+    //     this.addListenerOnCssEditor();
+    //     this.addListenerOnHelpBlock();
+    //     this.addListenerOnResetButton(); 
+    // }
 
     initAllBaseClasses() {
-        this.footer.init();
-        this.header.init();
-        
-        this.cssEditor.init();
-        this.hTMLViewer.init();
-        this.sideBar.init();
-        this.table.init();
+        const setCurrentUserAnswer = (answer) => {
+            this.currentLevelStore.currentUserAnswer = answer;
+        };
+
+        const onCheckAnswerButton = () => {
+            this.onCheckAnswerButton();
+        }
+
+        const cssEditorBaseState = {
+            setCurrentUserAnswer: setCurrentUserAnswer.bind(this),
+            onCheckAnswerButton: onCheckAnswerButton.bind(this),
+        }
+
+        this.cssEditor = new CssEditor(cssEditorBaseState);
     }
 
     renderAllBlocks() {
-        this.footer.render();
-        this.header.render();
-        this.cssEditor.render();
-        this.hTMLViewer.render();
-        this.sideBar.render();
-        this.table.render(); 
+        // this.header.render('header');
+        this.cssEditor.render('cssEditor');
+        // this.hTMLViewer.render('hTMLViewer');
+        this.sideBar.render('sideBar');
+        // this.table.render('table'); 
+        this.footer.render('footer');
     }
 
     start() {
         this.tryToApplyDataFromLocalStorage();
-        this.setCurrentLevelStore(this.createCurrentLevelStore());
-
-        this.initAllBaseClasses();
+        this.setCurrentLevelStore(createCurrentLevelStore(this.currentLevel));
 
         this.renderAllBlocks();
-        this.addAllListeners();
+        // this.addAllListeners();
     }
 }
 
-// communicating between classes
-// add architect to CssEditor
-// add architect to Footer
+// communicating between classes +
+// add architect to CssEditor +
+// add architect to Footer +
 // add architect to Header
 // add architect to HTMLViewer
-// add architect to SideBar
+// add architect to SideBar +
 // add architect to Table
-// implement functions in CssEditor
-// implement functions in Footer
-// implement functions in Header
-// implement functions in HTMLViewer
-// implement functions in SideBar
-// implement functions in Table
-// implement functions in App
+// implement methods in CssEditor
+// implement methods in Footer +
+// implement methods in Header
+// implement methods in HTMLViewer
+// implement methods in SideBar +
+// implement methods in Table
+// implement methods in App
+// write all levels inside constant LEVELS
