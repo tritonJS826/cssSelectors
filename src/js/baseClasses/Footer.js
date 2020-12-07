@@ -5,7 +5,9 @@ export default class Footer {
     }
 
     rerender() {
-        this.render(this.whereId);
+        if (this.whereId) {
+            this.render(this.whereId);
+        }
     }
 
     render(whereId) {

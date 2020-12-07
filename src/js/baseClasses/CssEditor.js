@@ -39,8 +39,10 @@ export default class CssEditor {
     }
 
     rerender() {
-        this.removeListeners();
-        this.render(this.whereId);
+        if (this.whereId) {
+            this.removeListeners();
+            this.render(this.whereId);
+        }
     }
 
     render(whereId) {

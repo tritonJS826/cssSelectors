@@ -1,3 +1,5 @@
+import isLevelCompleted from '../helpers/isLevelComplited';
+
 const SIDE_BAR_ELEMENTS_ID = {
     nextArrow: 'nextArrow',
     prevArrow: 'prevArrow',
@@ -51,8 +53,8 @@ export default class SideBar {
         }
 
         this.removeListenersSideBar = () => {
-            prevArrow().removeEventListener('click', this.onClickPrevArrow);
-            nextArrow().removeEventListener('click', this.onClickNextArrow);
+            if (prevArrow()) prevArrow().removeEventListener('click', this.onClickPrevArrow);
+            if (nextArrow()) nextArrow().removeEventListener('click', this.onClickNextArrow);
         }
     }
 
@@ -97,12 +99,13 @@ export default class SideBar {
         if (isDataChanged) {
             this.rerender();
         }
-
     }
 
     rerender() {
-        this.removeListenersSideBar();
-        this.render(this.whereId);
+        if (this.whereId) {
+            this.removeListenersSideBar();
+            this.render(this.whereId);
+        }
     }
 
     render(whereId) {
@@ -111,6 +114,7 @@ export default class SideBar {
         element.innerHTML = (`
             <div className="sideBar">
                 <h2 class="sidebar__level">Level ${this.currentLevel} of ${this.LEVELS.length} </h2>
+                <p> Уровень ${isLevelCompleted(this.currentLevel, this.completedLevels) ? 'завершен' : 'еще не пройден'} </p>
                 <div class="sidebar__nav-arrows">
                     <div id=${SIDE_BAR_ELEMENTS_ID.prevArrow}><</div>
                     <div id=${SIDE_BAR_ELEMENTS_ID.nextArrow}>></div>

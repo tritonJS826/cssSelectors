@@ -11,16 +11,10 @@ const LEVELS = [{
         '<p>selects all div elements</p>.',
         '<p>selects all p elements.</p>'
     ],
-    templateLines: [
-        '<div class="table">',
-        '&nbsp;&nbsp;</plate>',
-        '&nbsp;&nbsp;</plate>',
-        '</div>'      
-    ],
     answer: 'plate',
-    table: [{
+    tableItems: [{
         plateNumber: 1,
-        children: [],
+        children: [ ],
         hint: '</plate>',
     }, {
         plateNumber: 2,
@@ -40,14 +34,8 @@ const LEVELS = [{
         '<p>!!!!!!!!!!!!!!!!!</p>.',
         '<p>!!!!!!!!!!!!!1.</p>'
     ],
-    templateLines: [
-        '<div class="table">',
-        '&nbsp;&n!!!!!!!!!!bsp;</plate>',
-        '&nbsp;&nbsp;</plate>',
-        '</div>'      
-    ],
     answer: '.plate',
-    table: [{
+    tableItems: [{
         plateNumber: 1,
         children: [],
         hint: '</plate>',
@@ -69,19 +57,13 @@ const LEVELS = [{
         '<p>3333333!!!!!!!!!!!!!!!!!</p>.',
         '<p>3333333!!!!!!!!!!!!!1.</p>'
     ],
-    templateLines: [
-        '<div class="table">',
-        '&nbsp;&n33333333!!!!!!!!!!bsp;</plate>',
-        '&nbsp;&nbsp;</plate>',
-        '</div>'      
-    ],
     answer: '.plate',
-    table: [{
-        plateNumber: 1,
+    tableItems: [{
+        plateNumber: 13214,
         children: [],
         hint: '</plate>',
     }, {
-        plateNumber: 2,
+        plateNumber: 2322,
         children: [],
         hint: '</plate>',
     }],

@@ -71,8 +71,10 @@ export default class Header {
     }
 
     rerender() {
-        this.removeEventListenersOnHeader();
-        this.render(this.whereId);
+        if (this.whereId) {
+            this.removeEventListenersOnHeader();
+            this.render(this.whereId);
+        }
     }
 
     render(whereId) {

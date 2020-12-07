@@ -1,11 +1,15 @@
+import { v4 as uuidv4 } from 'uuid';
 import LEVELS from '../constants/levels';
 
 const createCurrentLevelStore = (currentLevel) => {
     const currentLevelData = LEVELS[currentLevel - 1];
 
-    const getStringWithModifier = (string) => {
+    const getItemWithModifier = (tableItem) => {
         return {
-            string,
+            id: uuidv4(),
+            plateNumber: tableItem.plateNumber,
+            children: [...tableItem.children.map(item => ({...item, isStrong: false, id: uuidv4()}))],
+            hint: tableItem.hint,
             isStrong: false,
         };
     };
@@ -22,8 +26,8 @@ const createCurrentLevelStore = (currentLevel) => {
         currentDescriptionHTML: currentLevelData.descriptionHTML,
         currentAnswer: currentLevelData.answer,
         currentExamples: currentLevelData.examples,
-        currentTable: currentLevelData.table,
-        currentTemplateLines: currentLevelData.templateLines.map(getStringWithModifier),
+        currentTableItems: currentLevelData.tableItems.map(getItemWithModifier),
+        // currentTemplateLines: currentLevelData.templateLines.map(getStringWithModifier),
         currentUserAnswer: 'write here',
     };
 
