@@ -87,7 +87,7 @@ export default class HTMLViewer {
                     <div class="htmlViewer__item" data-item-id=t${el.id}>
                     &nbsp&nbsp&lt;${el.hint} ${el.idName ? `id="${el.idName}"` : ''} &gt;</br>    
                         ${el.children.map((item) => `
-                            <div class="htmlViewer__item" data-item-id=t${el.id}>
+                            <div class="htmlViewer__item" data-item-id=t${item.id}>
                                 &nbsp&nbsp&nbsp&nbsp
                                 &lt;${item.hint}
                                 ${item.classModifier ? `class="${item.classModifier}"` : ''} 

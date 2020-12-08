@@ -1,7 +1,7 @@
 export default class Footer {
     constructor() {
         this.whereId = '';
-        this.contentHTML = '<p>Made by tritonJS826 -- come say hi </p></br><p>Have feedback or questions? Please file an isssue on the Github repo.</p>'
+        this.contentHTML = '<p>Made by <a href="#">tritonJS826</a> -- come say hi </p></br><p>Have feedback or questions? Please file an isssue on <a href="https://github.com/tritonJS826/">the Github repo</a>.</p>'
     }
 
     rerender() {

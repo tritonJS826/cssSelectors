@@ -9,7 +9,7 @@ export const removeHighLight = (hightLightedItems, element) => {
     if (hightLightedItems[1]) hightLightedItems[1].classList.remove('lightColor');
     if (hightLightedItems[2]) hightLightedItems[2].classList.remove('lightColor');
 
-    element.removeEventListener('mouseleave', () => removeHighLight);
+    element.removeEventListener('mouseout', () => removeHighLight(hightLightedItems, element));
 }
 
 export const flyItemAway = (element) => {

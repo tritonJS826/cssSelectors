@@ -6,10 +6,10 @@ const LEVELS = [{
     titleHTML: 'Type Selector',
     subTitleHTML: 'Select elements by their type',
     selectorHTML: 'A',
-    descriptionHTML: 'Selects all elements of type A. Type refers to the type of tag, so div, p and ul are all different element types.',
+    descriptionHTML: 'Selects all elements of type <strong>A</strong>. Type refers to the type of tag, so <tag>div</tag>, <tag>p</tag> and <tag>ul</tag> are all different element types.',
     examples: [
-        'selects all div elements.',
-        'selects all p elements.'
+        '<strong>div</strong> selects all <tag>div</tag> elements.',
+        '<strong>p</strong> selects all <tag>p</tag> elements.'
     ],
     answer: 'plate',
     tableItems: [{
@@ -17,19 +17,48 @@ const LEVELS = [{
         hint: 'plate',
         pair: true,
         cssClassName: 'roundPlate',
-        children: [],
+        children: [{
+            childNumber: 1,
+            cssClassName: 'orange',
+            small: true,
+            hint: 'orange'
+        },
+        {
+            childNumber: 2,
+            cssClassName: 'apple',
+            hint: 'apple'
+        },
+        {
+            childNumber: 3,
+            cssClassName: 'apple',
+            hint: 'apple'
+        }],
     }, {
         plateNumber: 2,
-        children: [],
+        children: [
+            {
+                childNumber: 1,
+                cssClassName: 'pickle',
+                hint: 'small',
+            }, {
+                childNumber: 2,
+                cssClassName: 'pickle',
+                hint: 'pickle',
+            }, {
+                childNumber: 1,
+                cssClassName: 'pickle',
+                hint: 'pickle',
+                small: true,
+            }],
         hint: 'plate',
         pair: true,
         cssClassName: 'roundPlate',
     }],
-},{
+}, {
     levelNumber: 2,
     headerTitle: 'Select the bento boxes',
     levelNameHTML: 'Select the bento boxes',
-    helpBlockHTML: 'super asd!!!!!!!!!!!!!',
+    helpBlockHTML: 'super manual!!!!!!!!!!!!!',
     titleHTML: 'Type Selector',
     subTitleHTML: 'Select elements by their type',
     selectorHTML: 'A',
@@ -45,24 +74,24 @@ const LEVELS = [{
         hint: 'bento',
         pair: true,
         cssClassName: 'squarePlate',
-    },{
+    }, {
         plateNumber: 2,
         children: [],
         hint: 'plate',
         pair: true,
         cssClassName: 'roundPlate',
-    },{
+    }, {
         plateNumber: 3,
         children: [],
         hint: 'bento',
         pair: true,
         cssClassName: 'squarePlate',
     }],
-},{
+}, {
     levelNumber: 3,
     levelNameHTML: '<p>p asda !!!!!!!all p elements.</p>',
     headerTitle: 'Select the fancy plate',
-    helpBlockHTML: 'super asd!!!!!!!!!!!!!',
+    helpBlockHTML: 'super manual!!!!!!!!!!!!!',
     titleHTML: 'ID Selector',
     subTitleHTML: 'Select elements with an ID',
     selectorHTML: '#id',
@@ -71,7 +100,7 @@ const LEVELS = [{
         '#cool selects any element with id="cool"',
         'ul#long selects ul id="long"',
     ],
-    answer: 'bento',
+    answer: '#fancy',
     tableItems: [{
         plateNumber: 1,
         children: [],
@@ -89,11 +118,11 @@ const LEVELS = [{
         hint: 'bento',
         cssClassName: 'squarePlate',
     }],
-},{
+}, {
     levelNumber: 4,
     headerTitle: 'Select the apple on the plate',
     levelNameHTML: 'asd',
-    helpBlockHTML: 'super asd!!!!!!!!!!!!!',
+    helpBlockHTML: 'super manual!!!!!!!!!!!!!',
     titleHTML: 'Descendant Selector',
     subTitleHTML: 'Select an element inside another element',
     selectorHTML: 'A  B',
@@ -109,22 +138,22 @@ const LEVELS = [{
         hint: 'bento',
         pair: true,
         cssClassName: 'squarePlate',
-    },{
+    }, {
         plateNumber: 2,
         children: [],
         hint: 'plate',
         cssClassName: 'roundPlate',
-    },{
+    }, {
         plateNumber: 3,
         children: [],
         hint: 'apple',
         cssClassName: 'roundPlate',
     }],
-},{
+}, {
     levelNumber: 5,
     levelNameHTML: '<p>3333p asda !!!!!!!all p elements.</p>',
     headerTitle: 'Select the pickle on the fancy plate',
-    helpBlockHTML: 'super asd!!!!!!!!!!!!!',
+    helpBlockHTML: 'super manual!!!!!!!!!!!!!',
     titleHTML: 'Combine the Descendant & ID Selectors',
     subTitleHTML: '',
     selectorHTML: '#id  A',
@@ -134,17 +163,46 @@ const LEVELS = [{
     ],
     answer: '#fancy pickle',
     tableItems: [{
-        plateNumber: 13214,
-        children: [],
-        hint: '</plate>',
+        plateNumber: 1,
+        children: [{
+            childNumber: 2,
+            cssClassName: 'apple',
+            hint: 'apple'
+        },
+        {
+            childNumber: 3,
+            cssClassName: 'apple',
+            hint: 'apple'
+        }],
+        hint: 'plate',
+        cssClassName: 'roundPlate',
+        idName: 'fancy',
+    }, {
+        plateNumber: 2,
+        children: [
+        {
+            childNumber: 3,
+            cssClassName: 'pickle',
+            hint: 'pickle'
+        }],
+        hint: 'plate',
         cssClassName: 'roundPlate',
     }, {
-        plateNumber: 2322,
-        children: [],
-        hint: '</plate>',
-        cssClassName: 'roundPlate',
+        plateNumber: 3,
+        children: [{
+            childNumber: 2,
+            cssClassName: 'apple',
+            hint: 'apple'
+        },
+        {
+            childNumber: 3,
+            cssClassName: 'apple',
+            hint: 'apple'
+        }],
+        hint: 'bento',
+        cssClassName: 'squarePlate',
     }],
-},{
+}, {
     levelNumber: 6,
     headerTitle: 'Select the small apples',
     levelNameHTML: '<p>p selects all p elements.</p>',
@@ -159,7 +217,7 @@ const LEVELS = [{
     answer: '.small',
     tableItems: [{
         plateNumber: 1,
-        children: [ ],
+        children: [],
         hint: 'plate',
         cssClassName: 'roundPlate',
     }, {
@@ -168,11 +226,11 @@ const LEVELS = [{
         hint: 'plate',
         cssClassName: 'squarePlate',
     }],
-},{
+}, {
     levelNumber: 7,
     levelNameHTML: '<p>p asda !!!!!!!all p elements.</p>',
     headerTitle: 'Select the small oranges',
-    helpBlockHTML: 'super asd!!!!!!!!!!!!!',
+    helpBlockHTML: 'super manual!!!!!!!!!!!!!',
     titleHTML: 'Combine the Class Selector',
     subTitleHTML: 'Combine the Class Selector',
     selectorHTML: 'A.className',
@@ -184,20 +242,49 @@ const LEVELS = [{
     answer: 'orange.small',
     tableItems: [{
         plateNumber: 1,
-        children: [],
-        hint: '</plate>',
+        children: [{
+            childNumber: 2,
+            cssClassName: 'apple',
+            hint: 'apple'
+        },
+        {
+            childNumber: 3,
+            cssClassName: 'apple',
+            hint: 'apple'
+        }],
+        hint: 'plate',
         cssClassName: 'roundPlate',
+        idName: 'fancy',
     }, {
         plateNumber: 2,
-        children: [],
-        hint: '</plate>',
+        children: [
+        {
+            childNumber: 3,
+            cssClassName: 'pickle',
+            hint: 'pickle'
+        }],
+        hint: 'plate',
         cssClassName: 'roundPlate',
-    }],
-},{
+    }, {
+        plateNumber: 3,
+        children: [{
+            childNumber: 2,
+            cssClassName: 'apple',
+            hint: 'apple'
+        },
+        {
+            childNumber: 3,
+            cssClassName: 'apple',
+            hint: 'apple'
+        }],
+        hint: 'bento',
+        cssClassName: 'squarePlate',
+    },],
+}, {
     levelNumber: 8,
     levelNameHTML: '<p>3333p asda !!!!!!!all p elements.</p>',
     headerTitle: 'Select the small oranges in the bentos',
-    helpBlockHTML: 'super asd!!!!!!!!!!!!!',
+    helpBlockHTML: 'super manual!!!!!!!!!!!!!',
     titleHTML: 'You can do it...',
     subTitleHTML: '',
     selectorHTML: 'Put your back into it!',
@@ -215,7 +302,7 @@ const LEVELS = [{
         hint: '</plate>',
         cssClassName: 'roundPlate',
     }],
-},{
+}, {
     levelNumber: 9,
     headerTitle: 'Select all the plates and bentos',
     levelNameHTML: '<p>p selects all p elements.</p>',
@@ -231,7 +318,7 @@ const LEVELS = [{
     answer: 'plate, bento',
     tableItems: [{
         plateNumber: 1,
-        children: [ ],
+        children: [],
         hint: 'plate;',
         cssClassName: 'roundPlate',
     }, {
@@ -240,11 +327,11 @@ const LEVELS = [{
         hint: 'plate;',
         cssClassName: 'squarePlate',
     }],
-},{
+}, {
     levelNumber: 10,
     levelNameHTML: '<p>p asda !!!!!!!all p elements.</p>',
     headerTitle: 'Select all the things!',
-    helpBlockHTML: 'super asd!!!!!!!!!!!!!',
+    helpBlockHTML: 'super manual!!!!!!!!!!!!!',
     titleHTML: 'The Universal Selector',
     subTitleHTML: 'You can select everything!',
     selectorHTML: '*',
@@ -264,11 +351,11 @@ const LEVELS = [{
         hint: '</plate>',
         cssClassName: 'roundPlate',
     }],
-},{
+}, {
     levelNumber: 11,
     levelNameHTML: '<p>3333p asda !!!!!!!all p elements.</p>',
     headerTitle: 'Select everything on a plate',
-    helpBlockHTML: 'super asd!!!!!!!!!!!!!',
+    helpBlockHTML: 'super manual!!!!!!!!!!!!!',
     titleHTML: 'Combine the Universal Selector',
     subTitleHTML: '',
     selectorHTML: 'A  *',

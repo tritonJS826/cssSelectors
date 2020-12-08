@@ -16,14 +16,15 @@ export default class Table {
         this.onTableMouseover = ({ target }) => {
             const dataItemId = target.getAttribute('data-item-id');
             const hightLightedItems = document.body.querySelectorAll(`[data-item-id=${dataItemId}]`);
-
+            
             if (!hightLightedItems || hightLightedItems.length === 0) return;
 
-            if (target.classList.contains('table__item')) {
+                
+            if (target.getAttribute('data-item-id')) {
                 addHighLight(hightLightedItems);
             }
             
-            target.addEventListener('mouseleave', () => removeHighLight(hightLightedItems, target));
+            target.addEventListener('mouseout', () => removeHighLight(hightLightedItems, target));
         };
         
         this.addListenerOnTable = () => {
@@ -33,7 +34,7 @@ export default class Table {
 
         this.removeListenersOnTable = () => {
             table().removeEventListener('mouseover', this.onTableMouseover);
-            table().removeEventListener('mouseout', this.onTableMouseleave);
+            table().removeEventListener('mouseleave', this.onTableMouseleave);
         }
     }
 
@@ -58,17 +59,22 @@ export default class Table {
         const element = document.getElementById(whereId);
         element.innerHTML = (`
         <div class="table__wrapper">
-            <div class="table__surface">
+            <div class="table__surface surface">
+                <div id="surfaceWrapper" class="surface__wrapper">
                 ${this.tableItems.map((el) => `
-                <div class="table__item item-table ${el.idName ? `table__item_${el.idName}` : ''} ${el.cssClassName}" data-item-id=t${el.id}>
-                    ${el.children.map((child) => `
-                        <div class="item-table__child item-table__child_${child.cssClassName}" data-item-id=t${el.id}></div>
+                    <div class="table__item item-table ${el.idName ? `table__item_${el.idName}` : ''} ${el.cssClassName}" data-item-id=t${el.id}>
+                        <div class="item-hint">&lt${el.hint}&gt;</div>
+                        ${el.children.map((child) => `
+                            <div class="item-table__child item-table__child_${child.cssClassName}" ${child.small ? 'data-child-small=""' : ''} data-item-id=t${child.id}>
+                                <div class="item-hint">&lt${child.hint}&gt;</div>
+                            </div>
+                        `).join('')}
+                    </div>
                     `).join('')}
                 </div>
-                `).join('')}
+                <div class="table__edge"></div>
             </div>
         </div>
-        <div class="table__edge"></div>
         `);
 
         this.addListenerOnTable();

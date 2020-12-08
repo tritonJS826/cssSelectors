@@ -166,7 +166,7 @@ export default class SideBar {
                 <div class="levels-list__title">Choose a level</div>
                 ${this.LEVELS.map((levelData, index) => `
                 <div class="levels-list__item" data-level-number=${index + 1}>
-                    <span class="checkmark checkmark_list ${isLevelCompleted(this.currentLevel, this.completedLevels) ? 'completed' : ''}"></span>
+                    <span class="checkmark checkmark_list ${isLevelCompleted(index+1, this.completedLevels) ? 'checkmark_completed' : ''}"></span>
                     <span class="level-number">${index+1}</span>
                     <span class="level-selector">${levelData.selectorHTML}</span>
                 </div>
@@ -175,7 +175,7 @@ export default class SideBar {
             </div>
             <div class="sidebar__header">
                 <span class="sidebar__level-text">Level ${this.currentLevel} of ${this.LEVELS.length}</span>
-                <span class="sidebar__checkmark checkmark ${isLevelCompleted(this.currentLevel, this.completedLevels) ? 'completed' : ''}"></span>
+                <span class="sidebar__checkmark checkmark ${isLevelCompleted(this.currentLevel, this.completedLevels) ? 'checkmark_completed' : ''}"></span>
                 <div class="sidebar__nav-arrows">
                     <div class="prev" id=${SIDE_BAR_ELEMENTS_ID.prevArrow}></div>
                     <div class="next" id=${SIDE_BAR_ELEMENTS_ID.nextArrow}></div>
@@ -188,15 +188,15 @@ export default class SideBar {
             <div class="sidebar__subtitle">${this.subTitleHTML}</div>
             <div class="sidebar__selector">${this.selectorHTML}</div>
             <div class="sidebar__description">${this.descriptionHTML}</div>
-            </div>
             <div class="sidebar__examples">
                 <p>Examples</p>
                 ${this.examples.map((example) => `
-                <p class="sidebar__example">${example}</p>
+                <div class="sidebar__example">${example}</div>
                 `).join('')}
                 <div id="showAnswerButton" class="levels-list__reset">Show answer</div>
+            </div>
         </div>
-        `)
+        `);
 
             this.addListenerSideBar();
     }

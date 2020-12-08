@@ -129,15 +129,14 @@ export default class App {
         }
     }
 
-
     onCheckAnswerButton() {
         if (this.checkUserAnswer(this.currentLevelStore.currentUserAnswer)) {
-            const items = document.getElementById(BASE_BLOCS_ID.table).children;
+            const items = document.getElementById(BASE_BLOCS_ID.surfaceWrapper).children;
             const completedLevels = [...this.completedLevels, this.currentLevel];
             this.setCompletedLevels(completedLevels);
 
-            [...items].forEach((el) => el.children.forEach((item) => item.children.forEach((obj) => flyItemAway(obj)))); 
-            // сохранить новые пройденные
+            [...items].forEach((el) => flyItemAway(el));  
+
             const increaseCurrentLevel = this.increaseCurrentLevel.bind(this);
             setTimeout(() => {
                 increaseCurrentLevel();
@@ -216,26 +215,3 @@ export default class App {
         this.renderAllBlocks();
     }
 }
-
-
-// написать данные для всех levels в константах... капец это нереал)
-// -------------
-
-// multiple styles  -- ?
-
-// create overPlateHints + styles
-// stylestable line 63 with css (blue circle) (example level 3)
-// styles footer
-// styles resetButton (inside sidebar)
-// styles showAnswer (inside sidebar)
-// styles sideBar levelsList + isLevelCompleted
-// table base
-// --------------
-// style table children
-// <plate>
-//     <bottom0>
-//        <flexColumnReverse>
-//            children(apple, pickle, orange)
-//        </flexColumnReverse>
-//    </bottom0>
-// </plate> 
