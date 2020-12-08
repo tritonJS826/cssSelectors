@@ -1,13 +1,22 @@
 import isLevelCompleted from '../helpers/isLevelComplited';
+import LOCAL_STORAGE_CONFIG from '../constants/locaStorageConfig';
+import { setDataInLocalStorage } from '../helpers/localStorage';
+import { showTextAnimation } from '../helpers/cssEffects';
 
 const SIDE_BAR_ELEMENTS_ID = {
     nextArrow: 'nextArrow',
     prevArrow: 'prevArrow',
+    levelsList: 'levelsList',
+    resetProgress: 'resetProgress',
+    showAnswerButton: 'showAnswerButton',
+    userAnswer: 'userAnswer',
 };
 
 const nextArrow = () => document.getElementById(SIDE_BAR_ELEMENTS_ID.nextArrow);
 const prevArrow = () => document.getElementById(SIDE_BAR_ELEMENTS_ID.prevArrow);
-
+const levelsList = () => document.getElementById(SIDE_BAR_ELEMENTS_ID.levelsList);
+const resetProgress = () => document.getElementById(SIDE_BAR_ELEMENTS_ID.resetProgress);
+const showAnswerButton = () => document.getElementById(SIDE_BAR_ELEMENTS_ID.showAnswerButton);
 export default class SideBar {
     constructor({
         LEVELS,
@@ -20,8 +29,11 @@ export default class SideBar {
         selectorHTML,
         descriptionHTML,
         examples,
+        currentAnswer,
         increaseCurrentLevel,
         decreaseCurrentLevel,
+        setCurrentLevel,
+        setCompletedLevels,
     }) {
         this.whereId = '';
         this.LEVELS = LEVELS;
@@ -34,27 +46,60 @@ export default class SideBar {
         this.selectorHTML = selectorHTML;
         this.descriptionHTML = descriptionHTML;
         this.examples = examples;
-        this.increaseCurrentLevel = () => increaseCurrentLevel();
-        this.decreaseCurrentLevel = () => decreaseCurrentLevel();
+        this.currentAnswer = currentAnswer;
 
         this.onClickPrevArrow = () => {
-            this.decreaseCurrentLevel();
+            decreaseCurrentLevel();
         }
 
         this.onClickNextArrow = () => {
-            this.increaseCurrentLevel();
+            increaseCurrentLevel();
+        }
+
+        this.onClickResetButton = () => {
+            setCurrentLevel(1);
+            setCompletedLevels([]);
+
+            setDataInLocalStorage(LOCAL_STORAGE_CONFIG.cssSelectorsData, {
+                currentLevel: this.currentLevel,
+                completedLevels: this.completedLevels,
+            });
+        };
+
+        this.onClickShowAnswerButton = () => {
+            const userAnswer = document.getElementById(SIDE_BAR_ELEMENTS_ID.userAnswer);
+
+            showTextAnimation(userAnswer, this.currentAnswer);
+        };
+
+        
+        this.onClickLevelsList = (event) => {
+            let { target } = event;
+
+            while (target !== window && target) {
+                const newLevelNumber = Number(target.getAttribute('data-level-number'));
+                if (newLevelNumber) {
+                    setCurrentLevel(newLevelNumber)
+                    return;
+                }
+                target = target.parentNode;
+            }
         }
         
         
         this.addListenerSideBar = () => {
             prevArrow().addEventListener('click', this.onClickPrevArrow);
             nextArrow().addEventListener('click', this.onClickNextArrow);
-
+            levelsList().addEventListener('click', this.onClickLevelsList);
+            resetProgress().addEventListener('click', this.onClickResetButton);
+            showAnswerButton().addEventListener('click', this.onClickShowAnswerButton);
         }
 
         this.removeListenersSideBar = () => {
             if (prevArrow()) prevArrow().removeEventListener('click', this.onClickPrevArrow);
             if (nextArrow()) nextArrow().removeEventListener('click', this.onClickNextArrow);
+            if (resetProgress()) resetProgress().removeEventListener('click', this.onClickResetButton);
+            if (levelsList()) levelsList().removeEventListener('click', this.onClickLevelsList);
         }
     }
 
@@ -70,6 +115,7 @@ export default class SideBar {
         selectorHTML,
         descriptionHTML,
         examples,
+        currentAnswer,
     }) {
          const isDataChanged = (LEVELS && LEVELS !== this.LEVELS) || 
          (whereId && whereId !== this.whereId) ||
@@ -81,6 +127,7 @@ export default class SideBar {
          (subTitleHTML && subTitleHTML !== this.subTitleHTML) ||
          (selectorHTML && selectorHTML !== this.selectorHTML) ||
          (descriptionHTML && descriptionHTML !== this.descriptionHTML) ||
+         (currentAnswer && currentAnswer !== this.currentAnswer) ||
          (examples && examples !== this.examples) || false;
          
         if (LEVELS) this.LEVELS = LEVELS;
@@ -93,9 +140,9 @@ export default class SideBar {
         if (subTitleHTML) this.subTitleHTML = subTitleHTML;
         if (selectorHTML) this.selectorHTML = selectorHTML;
         if (descriptionHTML) this.descriptionHTML = descriptionHTML;
+        if (currentAnswer) this.currentAnswer = currentAnswer;
         if (examples) this.examples = examples;
         
-
         if (isDataChanged) {
             this.rerender();
         }
@@ -112,35 +159,44 @@ export default class SideBar {
         this.whereId = whereId;
         const element = document.getElementById(whereId);
         element.innerHTML = (`
-            <div className="sideBar">
-                <h2 class="sidebar__level">Level ${this.currentLevel} of ${this.LEVELS.length} </h2>
-                <p> Уровень ${isLevelCompleted(this.currentLevel, this.completedLevels) ? 'завершен' : 'еще не пройден'} </p>
+        <div class="sidebar__wrapper">
+            <input id="toggle-burger" type="checkbox" class="sidebar__burger"></input>
+            <label for="toggle-burger"><span></span></label>
+            <div id="levelsList" class="sidebar__levels-list levels-list">
+                <div class="levels-list__title">Choose a level</div>
+                ${this.LEVELS.map((levelData, index) => `
+                <div class="levels-list__item" data-level-number=${index + 1}>
+                    <span class="checkmark checkmark_list ${isLevelCompleted(this.currentLevel, this.completedLevels) ? 'completed' : ''}"></span>
+                    <span class="level-number">${index+1}</span>
+                    <span class="level-selector">${levelData.selectorHTML}</span>
+                </div>
+                `).join('')}
+                <div id="resetProgress" class="levels-list__reset">Reset Progress</div>
+            </div>
+            <div class="sidebar__header">
+                <span class="sidebar__level-text">Level ${this.currentLevel} of ${this.LEVELS.length}</span>
+                <span class="sidebar__checkmark checkmark ${isLevelCompleted(this.currentLevel, this.completedLevels) ? 'completed' : ''}"></span>
                 <div class="sidebar__nav-arrows">
-                    <div id=${SIDE_BAR_ELEMENTS_ID.prevArrow}><</div>
-                    <div id=${SIDE_BAR_ELEMENTS_ID.nextArrow}>></div>
+                    <div class="prev" id=${SIDE_BAR_ELEMENTS_ID.prevArrow}></div>
+                    <div class="next" id=${SIDE_BAR_ELEMENTS_ID.nextArrow}></div>
                 </div>
-                <div class="sidebar__burger" id="">=</div>
-                <div class="level__progress-bar">${( this.currentLevel / this.LEVELS.length) * 100}%</div>
-                <div class="sidebar__title">${this.titleHTML}</div>
-                <div class="sidebar__subtitle">${this.subTitleHTML}</div>
-                <div class="sidebar__selector">${this.selectorHTML}</div>
-                <div class="sidebar__description">${this.descriptionHTML}</div>
-
-                <div class="sidebar__examples">
-                    <p>Examples</p>
-                    ${this.examples.map((example) => `
-                    <p class="sidebar__example">${example}</p>
-                    `)}
-                </div>
-
-                <div class="sidebar__levels-list levels-list">
-                It is List (start)
-                ${this.LEVELS.map((levelData) => `
-                <p class="levels-list__item">${levelData.selectorHTML}</p></br>
-                `)}
-                It is List (end)
-                </div>
-            </div>`)
+            </div>
+            <div class="sidebar__progress">
+                <div class="progress" style="width: ${( this.currentLevel / this.LEVELS.length) * 100}%"></div>
+            </div>
+            <div class="sidebar__title">${this.titleHTML}</div>
+            <div class="sidebar__subtitle">${this.subTitleHTML}</div>
+            <div class="sidebar__selector">${this.selectorHTML}</div>
+            <div class="sidebar__description">${this.descriptionHTML}</div>
+            </div>
+            <div class="sidebar__examples">
+                <p>Examples</p>
+                ${this.examples.map((example) => `
+                <p class="sidebar__example">${example}</p>
+                `).join('')}
+                <div id="showAnswerButton" class="levels-list__reset">Show answer</div>
+        </div>
+        `)
 
             this.addListenerSideBar();
     }

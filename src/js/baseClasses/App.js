@@ -1,14 +1,17 @@
 import CssEditor from './CssEditor';
 import Footer from './Footer';
 import Header from './Header';
-// import HTMLViewer from './HTMLViewer';
+import HTMLViewer from './HTMLViewer';
 import SideBar from './SideBar';
 import Table from './Table';
 
+import LOCAL_STORAGE_CONFIG from '../constants/locaStorageConfig';
+import BASE_BLOCS_ID from '../constants/baseBlocsId';
 import LEVELS from '../constants/levels';
 import { SECONDS_BEFORE_NEXT_LEVEL } from '../constants/common';
+import { setDataInLocalStorage, getDataFromLocalStorage } from '../helpers/localStorage';
 import createCurrentLevelStore from '../helpers/createCurrentLevelStore';
-import HTMLViewer from './HTMLViewer';
+import { flyItemAway, shakeElement } from '../helpers/cssEffects';
 
 export default class App {
     constructor() {
@@ -19,7 +22,7 @@ export default class App {
         this.header = { status: 'notCreated'};
         this.cssEditor = { status: 'notCreated'};
         this.htmlViewer = { status: 'notCreated'};
-        this.sideBar = { status: 'notCreated', getProps: () => {}};
+        this.sideBar = { status: 'notCreated'};
         this.table = { status: 'notCreated'};
     }
 
@@ -31,12 +34,15 @@ export default class App {
         this.currentLevelStore = newStore;
 
         const sideBarProps = {
+            currentLevel: this.currentLevel,
+            completedLevels: this.completedLevels,
             levelNumber: this.currentLevelStore.currentLevelNumber,
             levelNameHTML: this.currentLevelStore.LevelNameHTML,
             titleHTML: this.currentLevelStore.currentTitleHTML,
             subTitleHTML: this.currentLevelStore.currnetSubTitleHTML,
             selectorHTML: this.currentLevelStore.currentSelectorHTML,
             descriptionHTML: this.currentLevelStore.currentDescriptionHTML,
+            currentAnswer: this.currentLevelStore.currentAnswer,
             examples: this.examples,
         };
 
@@ -59,9 +65,12 @@ export default class App {
         this.header.getProps(headerProps);
         this.sideBar.getProps(sideBarProps);
         this.table.getProps(tableProps);
-    }
 
-    // setTableState() {}
+        setDataInLocalStorage(LOCAL_STORAGE_CONFIG.cssSelectorsData, {
+            currentLevel: this.currentLevel,
+            completedLevels: this.completedLevels,
+        });
+    }
 
     toggleHelpBlock() {
         this.currentLevelStore.isCurretHelpBlockHTMLVisible = !this.currentLevelStore.isCurretHelpBlockHTMLVisible;
@@ -76,10 +85,6 @@ export default class App {
     checkUserAnswer(answer) {
         return answer === this.currentLevelStore.currentAnswer;
     }
-
-    // flySubjectsFromTableAway() {} // UI
-
-    // shakeCodeArea() {}
 
     increaseCurrentLevel() {
         if (this.currentLevel === LEVELS.length) return;
@@ -100,56 +105,46 @@ export default class App {
         this.setCurrentLevelStore(newStore);
     }
 
-    // setCompletedLevels(completedLevels/* Array<number> */) {
-    //     this.completedLevels(completedLevels);
-    //     this.sideBar.getProps({ completedLevels })
-    // }
-
-    // getCompletedLevels() {
-    //     return this.completedLevels;
-    // }
-
-    // setDataInLocalStorage(data) {} //helper
-
-    getDataFromLocalStorage() { // helper
-        return {
-            currentLevel: 1,
-            completedLevels: [],
-            asd: this.completedLevels,
-        }
+    setCompletedLevels(completedLevels) {
+        this.completedLevels = completedLevels;
+        this.sideBar.getProps({ completedLevels });
     }
 
-
-    tryToApplyDataFromLocalStorage() {              // complex(Data)
-        const { currentLevel, completedLevels } = this.getDataFromLocalStorage();
+    tryToApplyDataFromLocalStorage() {
+        const { currentLevel, completedLevels } = getDataFromLocalStorage(LOCAL_STORAGE_CONFIG.cssSelectorsData);
 
         if (!currentLevel && !completedLevels) {
-            this.setDataInLocalStorage({
+            setDataInLocalStorage(LOCAL_STORAGE_CONFIG.cssSelectorsData, {
                 currentLevel: this.currentLevel,
                 completedLevels: this.completedLevels,
             });
         }
 
         if (currentLevel) {
+            this.currentLevel = currentLevel;
             this.setCurrentLevelStore(createCurrentLevelStore(currentLevel));
         }
-        if (completedLevels.length !== 0) { // ??????????????check completedLevels.length !== 0?????????????
+        if (completedLevels && completedLevels.length !== 0) {
             this.setCompletedLevels(completedLevels);
         }
     }
 
 
-    onCheckAnswerButton() {           // complex(UI && Data)
+    onCheckAnswerButton() {
         if (this.checkUserAnswer(this.currentLevelStore.currentUserAnswer)) {
-            // this.flySubjectsFromTableAway();
-            // добавить уровень в пройденные 
+            const items = document.getElementById(BASE_BLOCS_ID.table).children;
+            const completedLevels = [...this.completedLevels, this.currentLevel];
+            this.setCompletedLevels(completedLevels);
+
+            [...items].forEach((el) => el.children.forEach((item) => item.children.forEach((obj) => flyItemAway(obj)))); 
             // сохранить новые пройденные
             const increaseCurrentLevel = this.increaseCurrentLevel.bind(this);
             setTimeout(() => {
                 increaseCurrentLevel();
             }, SECONDS_BEFORE_NEXT_LEVEL);
         } else {
-            // this.shakeCodeArea();
+            const codeArea = document.getElementById(BASE_BLOCS_ID.codeArea);
+            shakeElement(codeArea);
         }
     }
 
@@ -189,8 +184,11 @@ export default class App {
             selectorHTML: this.currentLevelStore.currentSelectorHTML,
             descriptionHTML: this.currentLevelStore.currentDescriptionHTML,
             examples: this.currentLevelStore.currentExamples,
+            currentAnswer: this.currentLevelStore.currentAnswer,
             increaseCurrentLevel: this.increaseCurrentLevel.bind(this),
             decreaseCurrentLevel: this.decreaseCurrentLevel.bind(this),
+            setCurrentLevel: this.setCurrentLevel.bind(this),
+            setCompletedLevels: this.setCompletedLevels.bind(this),
         };
 
         this.cssEditor = new CssEditor(cssEditorBaseState);
@@ -202,12 +200,12 @@ export default class App {
     }
 
     renderAllBlocks() {
-        this.header.render('header');
-        this.cssEditor.render('cssEditor');
-        this.htmlViewer.render('htmlViewer');
-        this.sideBar.render('sideBar');
-        this.table.render('table'); 
-        this.footer.render('footer');
+        this.header.render(BASE_BLOCS_ID.header);
+        this.cssEditor.render(BASE_BLOCS_ID.cssEditor);
+        this.htmlViewer.render(BASE_BLOCS_ID.htmlViewer);
+        this.sideBar.render(BASE_BLOCS_ID.sideBar);
+        this.table.render(BASE_BLOCS_ID.table); 
+        this.footer.render(BASE_BLOCS_ID.footer);
     }
 
     start() {
@@ -219,13 +217,25 @@ export default class App {
     }
 }
 
-// styles App (все методы рендера)
-// burger css
+
+// написать данные для всех levels в константах... капец это нереал)
 // -------------
-// burger listener
-// ------------
-// localStorage (saveProgress) + use it
-// App.increaseCurrentLevel (пробрасывать пропсы везде куда надо)
-// App.decreaseCurrentLevel (пробрасывать пропсы везде куда надо)
-// написать данные для всех levels в константах
-// реализовать кнопку показывающую ответ + с анимацией
+
+// multiple styles  -- ?
+
+// create overPlateHints + styles
+// stylestable line 63 with css (blue circle) (example level 3)
+// styles footer
+// styles resetButton (inside sidebar)
+// styles showAnswer (inside sidebar)
+// styles sideBar levelsList + isLevelCompleted
+// table base
+// --------------
+// style table children
+// <plate>
+//     <bottom0>
+//        <flexColumnReverse>
+//            children(apple, pickle, orange)
+//        </flexColumnReverse>
+//    </bottom0>
+// </plate> 

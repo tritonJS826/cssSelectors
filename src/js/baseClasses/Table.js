@@ -1,3 +1,5 @@
+import { addHighLight, removeHighLight } from '../helpers/cssEffects';
+
 const TABLE_ELEMENTS_ID = {
     table: 'table', 
 };
@@ -13,27 +15,16 @@ export default class Table {
 
         this.onTableMouseover = ({ target }) => {
             const dataItemId = target.getAttribute('data-item-id');
+            const hightLightedItems = document.body.querySelectorAll(`[data-item-id=${dataItemId}]`);
+
+            if (!hightLightedItems || hightLightedItems.length === 0) return;
 
             if (target.classList.contains('table__item')) {
-                const hightLightedItems = document.body.querySelectorAll(`[data-item-id=${dataItemId}]`);
-                
-                hightLightedItems[0].classList.add('lightShadow');
-                hightLightedItems[1].classList.add('lightColor');
-                
+                addHighLight(hightLightedItems);
             }
+            
+            target.addEventListener('mouseleave', () => removeHighLight(hightLightedItems, target));
         };
-        
-        // this.onTableMouseleave = ({ target }) => {
-        //     const dataItemId = target.getAttribute('data-item-id');
-        //     // mouseleave срабытывает со стола а не с объекта, надо вешать листенеры в onTableMuseover и сохранять их в массив для последующего удаления
-        //     // console.log(target, target.classList.contains('table__item'));
-        //     if (target.classList.contains('table__item')) {
-        //         const hightLightedItems = document.body.querySelectorAll('[data-item-id]', `${dataItemId}`);
-                
-        //         hightLightedItems[0].classList.remove('lightShadow');
-        //         hightLightedItems[1].classList.remove('lightColor');
-        //     }
-        // };
         
         this.addListenerOnTable = () => {
             table().addEventListener('mouseover', this.onTableMouseover);
@@ -66,7 +57,18 @@ export default class Table {
         this.whereId = whereId;
         const element = document.getElementById(whereId);
         element.innerHTML = (`
-            <div class="table">Table: ${this.tableItems.map((el) => `<div class="table__item" data-item-id=t${el.id}>${el.plateNumber}</div>`)}!!!!!!!!!!!</div>
+        <div class="table__wrapper">
+            <div class="table__surface">
+                ${this.tableItems.map((el) => `
+                <div class="table__item item-table ${el.idName ? `table__item_${el.idName}` : ''} ${el.cssClassName}" data-item-id=t${el.id}>
+                    ${el.children.map((child) => `
+                        <div class="item-table__child item-table__child_${child.cssClassName}" data-item-id=t${el.id}></div>
+                    `).join('')}
+                </div>
+                `).join('')}
+            </div>
+        </div>
+        <div class="table__edge"></div>
         `);
 
         this.addListenerOnTable();

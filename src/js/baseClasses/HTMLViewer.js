@@ -1,3 +1,5 @@
+import { addHighLight, removeHighLight } from '../helpers/cssEffects';
+
 const VIEWR_ELEMENTS_ID = {
     htmlViewer: 'htmlViewer', 
 };
@@ -13,27 +15,17 @@ export default class HTMLViewer {
 
         this.onHTMLViewerMouseover = ({ target }) => {
             const dataItemId = target.getAttribute('data-item-id');
+            const hightLightedItems = document.body.querySelectorAll(`[data-item-id=${dataItemId}]`);
+
+            if (!hightLightedItems || hightLightedItems.length === 0) return;
 
             if (target.classList.contains('htmlViewer__item')) {
-                const hightLightedItems = document.body.querySelectorAll(`[data-item-id=${dataItemId}]`);
-                
-                hightLightedItems[0].classList.add('lightShadow');
-                hightLightedItems[1].classList.add('lightColor');
-                
+                addHighLight(hightLightedItems);                
             }
+
+            target.addEventListener('mouseleave', () => removeHighLight(hightLightedItems, target));
+
         };
-        
-        // this.onTableMouseleave = ({ target }) => {
-        //     const dataItemId = target.getAttribute('data-item-id');
-        //     // mouseleave срабытывает со стола а не с объекта, надо вешать листенеры в onTableMuseover и сохранять их в массив для последующего удаления
-        //     // console.log(target, target.classList.contains('table__item'));
-        //     if (target.classList.contains('table__item')) {
-        //         const hightLightedItems = document.body.querySelectorAll('[data-item-id]', `${dataItemId}`);
-                
-        //         hightLightedItems[0].classList.remove('lightShadow');
-        //         hightLightedItems[1].classList.remove('lightColor');
-        //     }
-        // };
         
         this.addListenerOnHTMLViewer = () => {
             htmlViewer().addEventListener('mouseover', this.onHTMLViewerMouseover);
@@ -64,7 +56,50 @@ export default class HTMLViewer {
         this.whereId = whereId;
         const element = document.getElementById(whereId);
         element.innerHTML = (`
-            <div class="htmlViewer">htmlViewer: ${this.tableItems.map((el) => `<div class="htmlViewer__item" data-item-id=t${el.id}>${el.plateNumber}!!!!!!!!!!!</div>`)}</div>
+        <div class="code-area__header">
+            HTML Viewer
+        </div>
+        <div class="html-viewer__window">
+            <div class="line-numbers line-numbers_dark">
+                1<br/>
+                2<br/>
+                3<br/>
+                4<br/>
+                5<br/>
+                6<br/>
+                7<br/>
+                8<br/>
+                9<br/>
+                10<br/>
+                11<br/>
+                12<br/>
+                13<br/>
+                14<br/>
+                15<br/>
+                16<br/> 
+                17<br/>
+                18<br/>
+            </div>
+            <div class="html-viewer__markup">
+                <div class="htmlViewer">
+                    <div class="htmlViewer__item">&lt;div/&gt</div>
+                    ${this.tableItems.map((el) => `
+                    <div class="htmlViewer__item" data-item-id=t${el.id}>
+                    &nbsp&nbsp&lt;${el.hint} ${el.idName ? `id="${el.idName}"` : ''} &gt;</br>    
+                        ${el.children.map((item) => `
+                            <div class="htmlViewer__item" data-item-id=t${el.id}>
+                                &nbsp&nbsp&nbsp&nbsp
+                                &lt;${item.hint}
+                                ${item.classModifier ? `class="${item.classModifier}"` : ''} 
+                                /&gt;
+                            </div>
+                        `).join('')}    
+                        &nbsp&nbsp&lt;${el.hint}/&gt;
+                    </div>`).join('')}
+                    <div class="htmlViewer__item">&lt;/div/&gt</div>
+                </div>
+            </div>
+        </div>
         `);
 
         this.addListenerOnHTMLViewer();

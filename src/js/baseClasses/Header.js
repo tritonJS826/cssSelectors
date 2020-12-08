@@ -81,17 +81,17 @@ export default class Header {
         this.whereId = whereId;
         const element = document.getElementById(whereId);
         element.innerHTML = (`
-            <h1>${this.levelTitle}</h1>
-            ${this.isHelpBlockHTMLVisible}
-            <div style="display: ${this.isHelpBlockHTMLVisible ? 'block' : 'none'}">
+        <h1 class="header__title">${this.levelTitle}</h1>
+        <div class="header__popup popup-block ${this.isHelpBlockHTMLVisible ? 'active' : ''}">
+            <div class="popup-block__content">
                 ${this.helpBlockHTML}
-                <button id="${HEADER_ELEMENTS_ID.closeHelpBlockButton}">
-                closeHelpBlock
-                </button>
+                <div class="popup-block__close" id="${HEADER_ELEMENTS_ID.closeHelpBlockButton}">
+                </div>
             </div>
-            <button id="${HEADER_ELEMENTS_ID.openHelpBlockButton}"
-            style="display: ${!this.isHelpBlockHTMLVisible ? 'block' : 'none'}">openHelpBlock</button>
-        `);
+        </div>
+        <div id="${HEADER_ELEMENTS_ID.openHelpBlockButton}" class="header__help-block-btn"
+        style="display: ${!this.isHelpBlockHTMLVisible ? 'block' : 'none'}">Help, I'm stuck!</div>
+    `);
 
         this.addListenersOnHeader();
     }

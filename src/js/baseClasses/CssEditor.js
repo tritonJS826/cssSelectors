@@ -11,6 +11,7 @@ export default class CssEditor {
     constructor({ setCurrentUserAnswer, onCheckAnswerButton }) {
         this.state = {};
         this.whereId = '';
+        this.answer = answer; // throw answer from app
 
         this.setCurrentUserAnswer = (userAnswer) => setCurrentUserAnswer(userAnswer);
         this.onCheckAnswerButton = () => onCheckAnswerButton();
@@ -38,6 +39,10 @@ export default class CssEditor {
         }
     }
 
+    showAnswers() {
+        console.log(`вывести ответ сюда ${this.whereId}`);
+    }
+
     rerender() {
         if (this.whereId) {
             this.removeListeners();
@@ -49,9 +54,50 @@ export default class CssEditor {
         this.whereId = whereId;
         const element = document.getElementById(whereId);
         element.innerHTML = (`
-            <input type="text" id="userAnswer"></input>
-            <button id="enterButton">enter${this.setCurrentUserAnswer('asdasd')}</button>
-        `);
+        <div class="code-area__header">CSS Editor</div>
+        <div class="css-editor__window">
+            <div class="line-numbers line-numbers_light">
+                1<br/>
+                2<br/>
+                3<br/>
+                4<br/>
+                5<br/>
+                6<br/>
+                7<br/>
+                8<br/>
+                9<br/>
+                10<br/>
+                11<br/>
+                12<br/>
+                13<br/>
+                14<br/>
+                15<br/>
+                16<br/>
+                17<br/>
+                18<br/>
+            </div>
+            <div class="css-editor__input-area">
+                <input type="text" id="userAnswer"></input>
+                <div id="enterButton" class="enter-btn">enter</div>
+                <p>
+                    <br/>
+                    {<br/>
+                    /* Styles would go here. */ <br/>
+                    }<br/>
+                </p>
+                <p>
+                    <br/>
+                    /*
+                    <br/>
+                       Type a number to skip to a level.
+                    <br/>
+                       Ex → "5" for level 5
+                    <br/>
+                    */
+                </p>
+            </div>
+        </div>
+    `);
 
         this.addListenerOnCssEditor();
     }

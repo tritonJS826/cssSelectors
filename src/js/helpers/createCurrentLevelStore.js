@@ -11,6 +11,8 @@ const createCurrentLevelStore = (currentLevel) => {
             children: [...tableItem.children.map(item => ({...item, isStrong: false, id: uuidv4()}))],
             hint: tableItem.hint,
             isStrong: false,
+            cssClassName: tableItem.cssClassName,
+            idName: tableItem.idName,
         };
     };
 
@@ -25,9 +27,8 @@ const createCurrentLevelStore = (currentLevel) => {
         currentSelectorHTML: currentLevelData.selectorHTML,
         currentDescriptionHTML: currentLevelData.descriptionHTML,
         currentAnswer: currentLevelData.answer,
-        currentExamples: currentLevelData.examples,
+        currentExamples: [...currentLevelData.examples],
         currentTableItems: currentLevelData.tableItems.map(getItemWithModifier),
-        // currentTemplateLines: currentLevelData.templateLines.map(getStringWithModifier),
         currentUserAnswer: 'write here',
     };
 
