@@ -1,7 +1,3 @@
-const isLevelCompleted = (level, complitedLEvels) =>{
-    const isCompleted = complitedLEvels.includes(level); 
-
-    return isCompleted;
-}
+const isLevelCompleted = (level, complitedLEvels) => complitedLEvels.includes(level);
 
 export default isLevelCompleted;

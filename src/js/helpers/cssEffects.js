@@ -34,5 +34,4 @@ export const showTextAnimation = (element, text) => {
             element.value += letter;
         }, 100 * i);
     });
-    // element.value += text
 };

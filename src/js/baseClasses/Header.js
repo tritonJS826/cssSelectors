@@ -24,24 +24,16 @@ export default class Header {
         };
 
         this.addListenersOnHeader = () => {
-            openHelpBlockButton().addEventListener('click', () => {
-                this.toggleHelpBlock();
-            });
+            openHelpBlockButton().addEventListener('click', () => this.toggleHelpBlock());
 
-            closeHelpBlockButton().addEventListener('click', () => {
-                this.toggleHelpBlock();
-            })
+            closeHelpBlockButton().addEventListener('click', () => this.toggleHelpBlock());
         };
 
         this.removeEventListenersOnHeader = () => {
-            openHelpBlockButton().removeEventListener('click', () => {
-                this.toggleHelpBlock();
-            });
+            openHelpBlockButton().removeEventListener('click', () => this.toggleHelpBlock());
 
-            closeHelpBlockButton().removeEventListener('click', () => {
-                this.toggleHelpBlock();
-            })
-        }
+            closeHelpBlockButton().removeEventListener('click', () => this.toggleHelpBlock());
+        };
 
     }
 
